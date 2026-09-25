@@ -5,10 +5,12 @@ import os
 app = Flask(__name__)
 
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "uploads")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "users.db")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 def init_db():
-    conn = sqlite3.connect("users.db")
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
@@ -41,7 +43,7 @@ def register():
         address = request.form["address"]
 
 
-        conn = sqlite3.connect("users.db")
+        conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         cursor.execute(
             "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?)",
@@ -58,7 +60,7 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        conn = sqlite3.connect("users.db")
+        conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         cursor.execute(
             "SELECT * FROM users WHERE username = ? AND password = ?",
@@ -74,7 +76,7 @@ def login():
 
 @app.route("/profile/<username>")
 def profile(username):
-    conn = sqlite3.connect("users.db")
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
     user = cursor.fetchone()
@@ -103,6 +105,9 @@ def download(username):
     if not os.path.exists(path):
         return "No file uploaded"
     return send_file(path, as_attachment=True, download_name="Limerick.txt")
+
+
+init_db()
 
 if __name__ == "__main__":
     init_db()
