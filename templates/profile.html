@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Profile</title>
+  </head>
+  <body>
+    <h2>Welcome, {{ user[2] }}!</h2>
+    <p><b>Username:</b> {{ user[0] }}</p>
+    <p><b>First Name:</b> {{ user[2] }}</p>
+    <p><b>Last Name:</b> {{ user[3] }}</p>
+    <p><b>Email:</b> {{ user[4] }}</p>
+    <p><b>Address:</b> {{ user[5] }}</p>
+
+    <h3>Upload a File</h3>
+    <form
+      method="POST"
+      action="/upload/{{ user[0] }}"
+      enctype="multipart/form-data"
+    >
+      <input type="file" name="file" accept=".txt" required />
+      <button type="submit">Upload</button>
+    </form>
+
+    {% if word_count is not none %}
+    <p><b>Word count:</b> {{ word_count }}</p>
+    <a href="/download/{{ user[0] }}">Download file</a>
+    {% endif %}
+
+    <p><a href="/login">Logout</a></p>
+  </body>
+</html>
